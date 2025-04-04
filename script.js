@@ -52,7 +52,45 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .attr("r", 6)
             .attr("fill", d => d.Doping === "" ? "orange" : "steelblue")
             .attr("stroke", "black")
-            .attr("stroke-width", 1);
+            .attr("stroke-width", 1)
+            .on("mouseover", (event, d) => {
+                const xPosition = xScale(new Date(d.Year + "-01-01")) + 20;
+                const yPosition = yScale(parseTime(d.Time));
+
+                svg.append("text")
+                    .attr("class", "tooltip")
+                    .attr("x", xPosition)
+                    .attr("y", yPosition)
+                    .text(d.Name + ": " + d.Nationality)
+                    .attr("fill", "black")
+                    .style("font-size", "14px")
+                    .append("tspan")
+                    .attr("x", xPosition)
+                    .attr("y", yPosition + 15)
+                    .text(`Year: ${d.Year}, Time: ${d.Time}`)
+                    .append("tspan")
+                    .attr("x", xPosition)
+                    .attr("y", yPosition + 38)
+                    .text(d.Doping);
+
+                    const text = svg.select(".tooltip");
+                    const bbox = text.node().getBBox();
+                    const padding = 8;
+
+                    svg.insert("rect", ".tooltip")
+                    .attr("class", "tooltip")
+                    .attr("x", bbox.x - padding)
+                    .attr("y", bbox.y - padding)
+                    .attr("width", bbox.width + padding * 2)
+                    .attr("height", bbox.height + padding * 2)
+                    .attr("fill", "skyblue")
+                    .attr("rx", 10)
+                    .attr("ry", 10);
+
+            })
+            .on("mouseout", (d) => {
+                svg.selectAll(".tooltip").remove();
+            });
         
     })
         
